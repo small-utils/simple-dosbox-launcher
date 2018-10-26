@@ -10,4 +10,4 @@ It can be used by many distributions to package DOS programs.
 stack install
 ----
 
-installs simple-dosbox-launcher to `local-bin-path` (see `stack path`).
+installs `simple-dosbox-launcher` to `local-bin-path` (see `stack path | grep local-bin-path`).
