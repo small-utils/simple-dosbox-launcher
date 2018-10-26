@@ -1,0 +1,37 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.30.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: e9d13b734f41d836724c0d887c18b77cdf7a2c23249b8e134a249c579105beeb
+
+name:           simple-dosbox-launcher
+version:        0.1.1.1
+synopsis:       A simple launcher for dosbox programs in zip files
+description:    It can be used by distributions to package DOS programs.
+category:       Distribution
+homepage:       https://github.com/small-utils/simple-dosbox-launcher
+author:         crocket <748856+crocket@users.noreply.github.com>
+maintainer:     748856+crocket@users.noreply.github.com
+copyright:      2018 crocket <748856+crocket@users.noreply.github.com>
+license:        MPL-2.0
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.adoc
+
+executable simple-dosbox-launcher
+  main-is: Main.hs
+  other-modules:
+      Paths_simple_dosbox_launcher
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , directory
+    , filepath
+    , optparse-applicative
+    , typed-process
+    , unix-compat
+  default-language: Haskell2010
