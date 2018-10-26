@@ -9,8 +9,8 @@ import Options.Applicative ( Parser, info, helper
                            , header, strOption, metavar )
 import System.Directory ( createDirectoryIfMissing, getHomeDirectory
                         , removeDirectoryRecursive )
-import System.Process ( spawnProcess, waitForProcess, callProcess )
-import System.Posix.User ( getEffectiveUserID )
+import System.Process.Typed ( runProcess, runProcess_, proc )
+import System.PosixCompat.User ( getEffectiveUserID )
 -- base
 import Control.Applicative (optional)
 import System.Exit ( ExitCode(..), exitFailure )
@@ -39,7 +39,7 @@ mountSafely :: FilePath -> [String] -> IO ()
 mountSafely f args = do
   let target = last args
   procFail f args $ do
-    ec <- procExitCode "fusermount" ["-u", target]
+    ec <- runProcess $ proc "fusermount" ["-u", target]
     case ec of
       ExitFailure _ -> do
         putStrLn $ target ++ " cannot be unmounted."
@@ -48,11 +48,8 @@ mountSafely f args = do
         procFail f args $ do
           putStrLn $ target ++ "cannot be mounted."
           exitFailure
-  where procExitCode f args = do
-          ph <- spawnProcess f args
-          waitForProcess ph
-        procFail f args failf = do
-          ec <- procExitCode f args
+  where procFail f args failf = do
+          ec <- runProcess $ proc f args
           case ec of
             ExitSuccess -> return ()
             ExitFailure _ -> failf
@@ -76,10 +73,11 @@ main = do
   mountSafely "fuse-zip" ["-r", zipFile, lower]
   mountSafely "unionfs" [ "-o", "cow,hide_meta_files"
                         , upper++"=RW:"++lower++"=RO", merged ]
-  callProcess "dosbox" $ concat [ ["-exit", "-userconf"]
-                                , maybe [] (\c -> ["-conf", c]) dosboxConf
-                                , [ "-conf", userConf
-                                  , merged </> exePath ] ]
-  callProcess "fusermount" ["-u", merged]
-  callProcess "fusermount" ["-u", lower]
+  runProcess_ $ proc "dosbox" $
+    concat [ ["-exit", "-userconf"]
+           , maybe [] (\c -> ["-conf", c]) dosboxConf
+           , [ "-conf", userConf
+             , merged </> exePath ] ]
+  runProcess_ $ proc "fusermount" ["-u", merged]
+  runProcess_ $ proc "fusermount" ["-u", lower]
   removeDirectoryRecursive tmpDir
