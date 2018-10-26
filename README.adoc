@@ -3,3 +3,11 @@
 It is a simple launcher for dosbox programs compressed in zip files.
 
 It can be used by many distributions to package DOS programs.
+
+== Test Build
+
+----
+stack install
+----
+
+installs simple-dosbox-launcher to `local-bin-path` (see `stack path`).
