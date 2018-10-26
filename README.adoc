@@ -1,0 +1,5 @@
+= simple-dosbox-launcher
+
+It is a simple launcher for dosbox programs compressed in zip files.
+
+It can be used by many distributions to package DOS programs.
