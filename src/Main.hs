@@ -28,7 +28,7 @@ data Option = Option
 parser :: Parser Option
 parser = Option
   <$> strOption ( long "zip-file" <> short 'z' <> metavar "PATH" <>
-                  help"Path to zipfile that contains the dosbox program" )
+                  help "Path to zipfile that contains the dosbox program" )
   <*> (optional
         (strOption ( long "dosbox-conf" <> short 'c' <> metavar "PATH" <>
                      help "Path to dosbox conf for the dosbox program" )))
