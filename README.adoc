@@ -4,6 +4,21 @@ It is a simple launcher for dosbox programs compressed in zip files.
 
 It can be used by many distributions to package DOS programs.
 
+== Build-time Dependencies
+
+They are stipulated in `package.yaml`.
+
+== Run-time Dependencies
+
+* fuse-zip
+** For mounting a zip file containing a DOS program.
+* unionfs-fuse
+** For overlaying DOS programs with user data.
+* dosbox
+** For running DOS programs.
+
+Beware that old versions of unionfs-fuse and fuse-zip may be unstable.
+
 == Test Build
 
 ----
