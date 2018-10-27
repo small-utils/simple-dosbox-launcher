@@ -1,5 +1,5 @@
 name:                simple-dosbox-launcher
-version:             0.1.1.1
+version:             0.1.2.0
 synopsis:            A simple launcher for dosbox programs in zip files
 description:         It can be used by distributions to package DOS programs.
 homepage:            https://github.com/small-utils/simple-dosbox-launcher

@@ -6,7 +6,7 @@ import System.FilePath ( (</>), FilePath )
 import Options.Applicative ( Parser, info, helper
                            , (<**>), fullDesc, progDesc, help
                            , execParser, long, short
-                           , header, strOption, metavar )
+                           , header, strOption, metavar, switch )
 import System.Directory ( createDirectoryIfMissing, getHomeDirectory
                         , removeDirectoryRecursive )
 import System.Process.Typed ( runProcess, runProcess_, proc )
@@ -16,12 +16,14 @@ import Control.Applicative (optional)
 import System.Exit ( ExitCode(..), exitFailure )
 import Data.List (last)
 import Data.Maybe (maybe)
+import Control.Monad (when)
 
 data Option = Option
   { zipFile :: FilePath
   , dosboxConf :: Maybe FilePath
   , instName :: String
-  , exePath :: FilePath }
+  , exePath :: FilePath
+  , verbose :: Bool }
 
 parser :: Parser Option
 parser = Option
@@ -34,6 +36,7 @@ parser = Option
                   help "A unique name for a simple-dosbox-launcher instance" )
   <*> strOption ( long "exe-path" <> short 'p' <> metavar "PATH" <>
                   help "Relative path to the executable in zip-file" )
+  <*> switch ( long "verbose" <> short 'v' <> help "verbose output" )
 
 mountSafely :: FilePath -> [String] -> IO ()
 mountSafely f args = do
@@ -68,7 +71,13 @@ main = do
       upper = dataDir  </> instName
       confDir = home </> ".config" </> "simple-dosbox-launcher"
       userConf = confDir </> "dosbox-" ++ instName ++ ".conf"
-  putStrLn $ "User dosbox configuration for "++instName++" : "++userConf++"\n"
+  putStrLn $ "User dosbox configuration for "++instName++" : "++userConf
+  putStrLn $ "User data for "++instName++" : "++upper
+  when verbose $ do
+    putStrLn $ zipFile++" will be mounted on "++lower
+    putStrLn $ upper++" will be laid on top of "++lower++" at "++merged
+    putStrLn $ merged </> exePath++" will be executed."
+  putStrLn ""
   mapM_ (createDirectoryIfMissing True) [lower, merged, upper, confDir]
   mountSafely "fuse-zip" ["-r", zipFile, lower]
   mountSafely "unionfs" [ "-o", "cow,hide_meta_files"
